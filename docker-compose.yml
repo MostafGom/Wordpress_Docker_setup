@@ -1,0 +1,54 @@
+version: '3.1'
+
+services:
+
+  wordpressdemo_site:
+    image: wordpress
+    restart: always
+    ports:
+      - 8888:80
+    container_name: wpdemocontainer
+    networks:
+      - mylocalnetwork
+    environment:
+      WORDPRESS_DB_HOST: wordpressdemo_dp
+      WORDPRESS_DB_USER: '${MYSQL_USER}'
+      WORDPRESS_DB_PASSWORD: '${MYSQL_PASSWORD}'
+      WORDPRESS_DB_NAME: '${WORDPRESS_DB_NAME}'
+    volumes:
+      - wordpressdemovolume:/var/www/html
+    depends_on:
+      - wordpressdemo_dp
+
+  wordpressdemo_dp:
+    image: mysql:8.0
+    restart: always
+    networks:
+      - mylocalnetwork
+    environment:
+      MYSQL_DATABASE: '${WORDPRESS_DB_NAME}'
+      MYSQL_USER: '${MYSQL_USER}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_RANDOM_ROOT_PASSWORD: '${MYSQL_RANDOM_ROOT_PASSWORD}'
+    volumes:
+      - dbwordpressdemovolume:/var/lib/mysql
+
+  dbeaver_dbviewer:
+    image: dbeaver/cloudbeaver:22.1.1
+    container_name: CloudBeaver
+    restart: unless-stopped
+    networks:
+      - mylocalnetwork
+    volumes:
+      - ./dbeaver-data:/opt/cloudbeaver/workspace
+    ports:
+      - 5021:8978
+
+volumes:
+  wordpressdemovolume:
+  dbwordpressdemovolume:
+
+
+networks:
+  mylocalnetwork:
+    external: true
