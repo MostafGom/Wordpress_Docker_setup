@@ -10,9 +10,11 @@
 ```console
 docker network create mylocalnetwork
 ```
-### Make sure you define your env values in .env file
+#### Make sure you define your env values in .env file
 
-### Inside docker-compose.yml directory run:
+
+
+#### Inside docker-compose.yml directory run:
 ```console
 docker compose up
 ```
